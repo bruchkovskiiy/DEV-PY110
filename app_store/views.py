@@ -1,12 +1,19 @@
 from django.shortcuts import render
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, HttpResponseNotFound, JsonResponse
 from .models import DATABASE
 
 
 def product_view_json(request):
     if request.method == "GET":
+        id_ = request.GET.get('id')
+        if id_:
+            if id_ in DATABASE:
+                return JsonResponse(DATABASE[id_])
+            else:
+                return HttpResponseNotFound("Данного продукта нет в базе данных")
+
         return JsonResponse(DATABASE, json_dumps_params={'ensure_ascii': False,
-                                                     'indent': 4})
+                                                         'indent': 4})
 
 
 def shop_view(request):
