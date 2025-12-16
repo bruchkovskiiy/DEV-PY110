@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseNotFound, JsonResponse
 from .models import DATABASE
+from logic.services import filtering_category
 
 
 def product_view_json(request):
@@ -8,12 +9,23 @@ def product_view_json(request):
         id_ = request.GET.get('id')
         if id_:
             if id_ in DATABASE:
-                return JsonResponse(DATABASE[id_])
-            else:
-                return HttpResponseNotFound("Данного продукта нет в базе данных")
+                return JsonResponse(DATABASE[id_], json_dumps_params={'ensure_ascii': False,
+                                                                      'indent': 4})
+            return HttpResponseNotFound("Данного продукта нет в базе данных")
 
-        return JsonResponse(DATABASE, json_dumps_params={'ensure_ascii': False,
-                                                         'indent': 4})
+        # Обработка фильтрации из параметров запроса
+        category_key = request.GET.get("category")  # Считали 'category'
+        if ordering_key := request.GET.get("ordering"): # Если в параметрах есть 'ordering'
+            reverse = request.GET.get("reverse")
+            if reverse and reverse.lower() == 'true':  # Если в параметрах есть 'ordering' и 'reverse'=True
+                data = filtering_category(database=DATABASE, category_key=category_key, ordering_key=ordering_key, reverse=True) #  TODO Использовать filtering_category и провести фильтрацию с параметрами category, ordering, reverse=True
+            else:  # Если не обнаружили в адресно строке ...&reverse=true , значит reverse=False
+                data = filtering_category(database=DATABASE, category_key=category_key, ordering_key=ordering_key, reverse=False) #  TODO Использовать filtering_category и провести фильтрацию с параметрами category, ordering, reverse=False
+        else:
+            data = filtering_category(database=DATABASE, category_key=category_key) #  TODO Использовать filtering_category и провести фильтрацию с параметрами category
+        # В этот раз добавляем параметр safe=False, для корректного отображения списка в JSON
+        return JsonResponse(data, safe=False, json_dumps_params={'ensure_ascii': False,
+                                                                 'indent': 4})
 
 
 def product_page_view(request, page):
