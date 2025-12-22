@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseNotFound, JsonResponse
 from .models import DATABASE
 from logic.services import filtering_category
+from logic.control_cart import view_in_cart, add_to_cart, remove_from_cart
 
 
 def product_view_json(request):
@@ -55,3 +56,37 @@ def shop_view(request):
         with open('app_store/shop.html', encoding="utf-8") as f:
             data = f.read()  # Читаем HTML файл
         return HttpResponse(data)  # Отправляем HTML файл как ответ
+
+
+def cart_view_json(request):
+    if request.method == "GET":
+        username = ''
+        data = view_in_cart(username) # TODO Вызвать ответственную за это действие функцию view_in_cart(username)
+        return JsonResponse(data, json_dumps_params={'ensure_ascii': False,
+                                                     'indent': 4})
+
+
+def cart_add_view_json(request, id_product):
+    if request.method == "GET":
+        username = ''
+        result = add_to_cart(id_product, username) # TODO Вызвать ответственную за это действие функцию add_to_cart(id_product, username)
+        if result:
+            return JsonResponse({"answer": "Продукт успешно добавлен в корзину"},
+                                json_dumps_params={'ensure_ascii': False})
+
+        return JsonResponse({"answer": "Неудачное добавление в корзину"},
+                            status=404,
+                            json_dumps_params={'ensure_ascii': False})
+
+
+def cart_del_view_json(request, id_product):
+    if request.method == "GET":
+        username = ''
+        result = remove_from_cart(id_product, username) # TODO Вызвать ответственную за это действие функцию remove_from_cart(id_product, username)
+        if result:
+            return JsonResponse({"answer": "Продукт успешно удалён из корзины"},
+                                json_dumps_params={'ensure_ascii': False})
+
+        return JsonResponse({"answer": "Неудачное удаление из корзины"},
+                            status=404,
+                            json_dumps_params={'ensure_ascii': False})

@@ -40,14 +40,23 @@ def add_to_cart(id_product: str, username: str = '') -> bool:
     :return: Возвращает True в случае успешного добавления, а False в случае неуспешного добавления(товара по id_product
     не существует).
     """
-    cart = ...  # TODO Помните, что у вас есть уже реализация просмотра корзины view_in_cart(username),
+
+    if id_product not in DATABASE:
+        return False
+
+    cart = view_in_cart(username)  # TODO Помните, что у вас есть уже реализация просмотра корзины view_in_cart(username),
     # поэтому, чтобы загрузить данные из корзины, не нужно заново писать код.
 
     # TODO Проверьте существует ли добавляемый товар с id_product в базе данных DATABASE, если нет, то возвращаем False,
     #  так как добавление в корзину прошло неуспешно.
 
-    user_cart = ...  # TODO в переменную user_cart запишите данные об товарах пользователя.
+    user_cart = cart[username]  # TODO в переменную user_cart запишите данные об товарах пользователя.
     #  Т.е. в user_cart будет словарь из ключа "products" для соответствующего пользователя по username.
+
+    if id_product in user_cart['products']:
+        user_cart['products'][id_product] += 1
+    else:
+        user_cart['products'][id_product] = 1
 
     # ! Обратите внимание, что в переменной cart под ключем значения username находится словарь с ключом "products".
     # ! Именно в cart[username]["products"] лежит словарь где по id продуктов можно получить число продуктов в корзине.
@@ -63,6 +72,9 @@ def add_to_cart(id_product: str, username: str = '') -> bool:
     #  словаря cart, то любые изменения в user_cart аналогично отражаются в cart, поэтому достаточно записать
     #  в 'cart.json' словарь из cart
 
+    with open(PATH_CART, mode='w', encoding='utf-8') as f:  # Создаём файл и записываем корзину
+        json.dump(cart, f)
+
     return True
 
 
@@ -77,21 +89,33 @@ def remove_from_cart(id_product: str, username: str = '') -> bool:
     :return: Возвращает True в случае успешного удаления, а False в случае неуспешного удаления(товара по id_product
     не существует).
     """
-    cart = ...  # TODO Помните, что у вас есть уже реализация просмотра корзины view_in_cart(username),
+
+    if id_product not in DATABASE:
+        return False
+
+    cart = view_in_cart(username)  # TODO Помните, что у вас есть уже реализация просмотра корзины view_in_cart(username),
     # поэтому, чтобы загрузить данные из корзины, не нужно заново писать код.
 
     # С переменной user_cart функции remove_from_cart ситуация аналогичная, что с cart функции add_to_cart
-    user_cart = ...  # TODO в переменную user_cart запишите данные об товарах пользователя.
+    user_cart = cart[username]  # TODO в переменную user_cart запишите данные об товарах пользователя.
     #  Т.е. в user_cart будет словарь из ключа "products" для соответствующего пользователя по username.
 
     # TODO Проверьте, существует ли товар с id_product в корзине пользователя user_cart, если нет, то возвращаем False.
+
+    if id_product not in user_cart['products']:
+        return False
+
+    user_cart['products'].pop(id_product)
+
+    with open(PATH_CART, mode='w', encoding='utf-8') as f:  # Создаём файл и записываем корзину
+        json.dump(cart, f)
+
+    return True
 
     # TODO Если существует товар, то удаляем ключ 'id_product' у user_cart,
     #  вспомните как удалять ключи у словаря.
 
     # TODO Не забываем записать обновленные данные cart в 'cart.json', аналогично как делали в add_to_cart
-
-    return True
 
 
 if __name__ == "__main__":
