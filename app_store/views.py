@@ -58,6 +58,26 @@ def shop_view(request):
                       context={"products": DATABASE.values()})
 
 
+def cart_view(request):
+    if request.method == "GET":
+        username = ''
+        data = view_in_cart(username)[username]  # Получаем корзину пользователя username
+
+        products = []  # Список продуктов
+        for product_id, quantity in data['products'].items():
+            product = DATABASE[product_id]  # Получаем информацию о продукте
+            # TODO в словарь product под ключом "quantity" запишите текущее значение количества товара в корзине
+            product["quantity"] = quantity  # Реализуйте
+            # TODO в словарь product под ключом "price_total" посчитайте и запишите общую стоимость товара как произведение
+            #  его количества в корзине на цену с учетом скидки ('price_after'). Значение цены "price_total" приведите к формату
+            #  2 символов после запятой
+            product["price_total"] = f"{quantity * product['price_after']:.2f}"  # Реализуйте
+            # TODO добавьте словарь product в конец списка products
+            products.append(product)  # Реализуйте
+
+        return render(request, "app_store/cart.html", context={"products": products})
+
+
 def cart_view_json(request):
     if request.method == "GET":
         username = ''
