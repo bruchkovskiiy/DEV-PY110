@@ -60,7 +60,8 @@ def shop_view(request):
         else:
             data = filtering_category(DATABASE, category_key)
         return render(request, 'app_store/shop.html',
-                      context={"products": data})
+                      context={"products": data,
+                               "category": category_key})
 
 
 def cart_view(request):
