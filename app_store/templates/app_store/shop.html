@@ -96,20 +96,21 @@
     			</div>
     		</div>
     		<div class="row">
+                {% for product in products %}
     			<div class="col-md-6 col-lg-3 ftco-animate">
     				<div class="product">
     					<a href="../../product/bell_pepper.html" class="img-prod">
-							<img class="img-fluid" src="{% static 'app_store/images/product-1.jpg' %}" alt="Colorlib Template">
-    						<span class="status">30%</span>
+							<img class="img-fluid" src="{% static product.url %}" alt="Colorlib Template">
+    						<span class="status">{{product.discount}}</span>
     						<div class="overlay"></div>
     					</a>
     					<div class="text py-3 pb-4 px-3 text-center">
-    						<h3><a href="#">Болгарский перец</a></h3>
+    						<h3><a href="#">{{product.name}}</a></h3>
     						<div class="d-flex">
     							<div class="pricing">
 		    						<p class="price">
-										<span class="mr-2 price-dc">&#x20bd 300.00</span>
-										<span class="price-sale">&#x20bd 210.00</span>
+										<span class="mr-2 price-dc">{{product.price_before}}</span>
+										<span class="price-sale">{{product.price_after}}</span>
 									</p>
 		    					</div>
 	    					</div>
@@ -130,6 +131,7 @@
     					</div>
     				</div>
     			</div>
+                {% endfor %}
     			<div class="col-md-6 col-lg-3 ftco-animate">
     				<div class="product">
     					<a href="../../product/strawberry.html" class="img-prod">

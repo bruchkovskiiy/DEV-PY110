@@ -53,7 +53,9 @@ def product_page_view(request, page):
 
 def shop_view(request):
     if request.method == "GET":
-        return render(request, 'app_store/shop.html')
+        return render(request,
+                      'app_store/shop.html',
+                      context={"products": DATABASE.values()})
 
 
 def cart_view_json(request):
