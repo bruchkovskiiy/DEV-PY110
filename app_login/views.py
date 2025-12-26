@@ -1,5 +1,6 @@
 from django.contrib.auth import login, authenticate, logout
 from django.shortcuts import render, redirect
+from logic.control_cart import view_in_cart
 
 
 def login_view(request):
@@ -11,6 +12,7 @@ def login_view(request):
         user = authenticate(username=data["username"], password=data["password"])  # Понимаем, что за пользователь перед нами
         if user:  # Если пользователь есть в базе
             login(request, user)  # Авторизируем пользователя
+            view_in_cart(user.username)  # Получаем корзину пользователя, если её нет, то создаем её
             return redirect("/")  # Перенаправляем пользователя на стартовую страницу
         # Иначе заново показываем форму авторизации
         return render(request, "login/login.html", context={"error": "Неверные данные"})
