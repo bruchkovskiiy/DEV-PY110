@@ -14,3 +14,9 @@ def login_view(request):
             return redirect("/")  # Перенаправляем пользователя на стартовую страницу
         # Иначе заново показываем форму авторизации
         return render(request, "login/login.html", context={"error": "Неверные данные"})
+
+
+def logout_view(request):
+    if request.method == "GET":
+        logout(request)  # Функция разлогинивает пользователя
+        return redirect("/") # TODO Верните редирект на стартовую страницу
