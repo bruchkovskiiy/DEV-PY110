@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import product_view_json, shop_view, product_page_view, cart_view_json, cart_add_view_json, cart_del_view_json, cart_view, coupon_check_view, delivery_estimate_view, cart_buy_now_view
+from .views import product_view_json, shop_view, product_page_view, cart_view_json, cart_add_view_json, cart_del_view_json, cart_view, coupon_check_view, delivery_estimate_view, cart_buy_now_view, cart_remove_view
 
 app_name = 'app_store'
 
@@ -14,5 +14,6 @@ urlpatterns = [
     path('cart/del/<id_product>', cart_del_view_json),
     path('coupon/check/<slug:name_coupon>', coupon_check_view),
     path('delivery/estimate', delivery_estimate_view),
-    path('cart/buy/<str:id_product>', cart_buy_now_view, name="buy_now")
+    path('cart/buy/<str:id_product>', cart_buy_now_view, name="buy_now"),
+    path('cart/remove/<str:id_product>', cart_remove_view, name="remove_now"),
 ]
