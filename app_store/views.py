@@ -136,3 +136,28 @@ def coupon_check_view(request, name_coupon):
             return JsonResponse(DATA_COUPON.get(name_coupon))
         return HttpResponseNotFound("Неверный купон")
         # TODO Если купона нет в базе, то верните HttpResponseNotFound("Неверный купон")
+
+
+def delivery_estimate_view(request):
+    # База данных по стоимости доставки. Ключ - Страна; Значение словарь с городами и ценами; Значение с ключом fix_price
+    # применяется если нет города в данной стране
+    DATA_PRICE = {
+        "Россия": {
+            "Москва": {"price": 90},
+            "Санкт-Петербург": {"price": 78},
+            "fix_price": 100,
+        },
+    }
+    if request.method == "GET":
+        data = request.GET
+        country = data.get('country')
+        city = data.get('city')
+        if data_county := DATA_PRICE.get(country):
+            if data_city := data_county.get(city):
+                return JsonResponse(data_city)
+            return JsonResponse({"price": data_county["fix_price"]})
+        return HttpResponseNotFound("Неверные данные")
+        # TODO Реализуйте логику расчёта стоимости доставки, которая выполняет следующее:
+        # Если в базе DATA_PRICE есть и страна (country) и существует город(city), то вернуть JsonResponse со словарём, {"price": значение стоимости доставки}
+        # Если в базе DATA_PRICE есть страна, но нет города, то вернуть JsonResponse со словарём, {"price": значение фиксированной стоимости доставки}
+        # Если нет страны, то вернуть HttpResponseNotFound("Неверные данные")
