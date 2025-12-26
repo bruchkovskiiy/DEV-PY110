@@ -5,6 +5,7 @@ from logic.services import filtering_category
 from logic.control_cart import view_in_cart, add_to_cart, remove_from_cart
 from django.shortcuts import redirect
 from django.contrib.auth import get_user
+from django.contrib.auth.decorators import login_required
 
 
 def product_view_json(request):
@@ -66,6 +67,7 @@ def shop_view(request):
                                "category": category_key})
 
 
+@login_required(login_url='app_login:login_view')
 def cart_view(request):
     if request.method == "GET":
         username = get_user(request).username
@@ -86,6 +88,7 @@ def cart_view(request):
         return render(request, "app_store/cart.html", context={"products": products})
 
 
+@login_required(login_url='app_login:login_view')
 def cart_view_json(request):
     if request.method == "GET":
         username = get_user(request).username
@@ -94,6 +97,7 @@ def cart_view_json(request):
                                                      'indent': 4})
 
 
+@login_required(login_url='app_login:login_view')
 def cart_add_view_json(request, id_product):
     if request.method == "GET":
         username = get_user(request).username
@@ -107,6 +111,7 @@ def cart_add_view_json(request, id_product):
                             json_dumps_params={'ensure_ascii': False})
 
 
+@login_required(login_url='app_login:login_view')
 def cart_del_view_json(request, id_product):
     if request.method == "GET":
         username = get_user(request).username
@@ -165,6 +170,7 @@ def delivery_estimate_view(request):
         # Если нет страны, то вернуть HttpResponseNotFound("Неверные данные")
 
 
+@login_required(login_url='app_login:login_view')
 def cart_buy_now_view(request, id_product):
     if request.method == "GET":
         username = get_user(request).username
@@ -175,6 +181,7 @@ def cart_buy_now_view(request, id_product):
         return HttpResponseNotFound("Неудачное добавление в корзину")
 
 
+@login_required(login_url='app_login:login_view')
 def cart_remove_view(request, id_product):
     if request.method == "GET":
         username = get_user(request).username
