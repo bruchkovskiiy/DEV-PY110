@@ -6,6 +6,7 @@ from logic.control_wishlist import view_in_wishlist, add_to_wishlist, remove_fro
 from django.contrib.auth.decorators import login_required
 
 
+@login_required(login_url='app_login:login_view')
 def wishlist_view(request):
     if request.method == "GET":
         username = get_user(request).username
@@ -18,6 +19,7 @@ def wishlist_view(request):
         return render(request, 'app_wishlist/wishlist.html', context={"products": products})
 
 
+@login_required(login_url='app_login:login_view')
 def wishlist_view_json(request):
     """
     Просмотр всех продуктов в избранном для пользователя и возвращение этого в JSON
@@ -29,6 +31,7 @@ def wishlist_view_json(request):
                                                      'indent': 4})
 
 
+@login_required(login_url='app_login:login_view')
 def wishlist_add_view_json(request, id_product: str):
     """
     Добавление продукта в избранное и возвращение информации об успехе или неудаче в JSON
@@ -45,6 +48,7 @@ def wishlist_add_view_json(request, id_product: str):
                             json_dumps_params={'ensure_ascii': False})  # TODO верните JsonResponse с ключом "answer" и значением "Неудачное добавление в избранное" и параметром status=404
 
 
+@login_required(login_url='app_login:login_view')
 def wishlist_del_view_json(request, id_product: str):
     """
     Удаление продукта из избранного и возвращение информации об успехе или неудаче в JSON
@@ -61,6 +65,7 @@ def wishlist_del_view_json(request, id_product: str):
                             json_dumps_params={'ensure_ascii': False})  # TODO верните JsonResponse с ключом "answer" и значением "Неудачное удаление из избранного" и параметром status=404
 
 
+@login_required(login_url='app_login:login_view')
 def wishlist_remove_view(request, id_product):
     if request.method == "GET":
         username = get_user(request).username
